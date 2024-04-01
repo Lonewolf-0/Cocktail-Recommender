@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+    .center {
+      margin: auto;
+      width: 50%;
+
+      /* border: 3px solid green; */
+      padding: 2% 0;
+    }
+    .image{
+      height: 300px;
+      width: 300px;
+    }
+  </style>
+</head>
+
+<body>
+  <section>
+    <h1 class="center">
+      Select your choice of ingredient and we'll suggest you a cocktail.
+    </h1>
+  </section>
+  <section>
+    <form action="/" id="form" class="center" method="POST">
+      <div class="row center">
+        <div class="col">
+          <select name="type" class="form-select">
+            <!-- <option value="" data-display="Select">Random </option> -->
+            <% for( let i=0; i < options.length; i++ ) { %>
+              <option value="<%= options[i] %>">
+                <%= options[i] %>
+              </option>
+              <% } %>
+          </select>
+        </div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary">Go</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section>
+    <% if (locals.result) { %>
+      <div class="center">
+        <div class="row center">
+          <img src="<%= result.strDrinkThumb%>" class="image">
+        </div>
+        <div class="row center">
+          <%= result.strDrink %>
+        </div>
+      </div>
+      
+    <% } %>
+  </section>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
