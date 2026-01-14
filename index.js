@@ -38,13 +38,26 @@ app.post("/", async(req,res)=>{
 		const response2 = await axios.get(API_URL+"/filter.php?i="+req.body.type);
 		const result2 = response2.data;
 		const randomselect = result2.drinks[Math.floor(Math.random() * result2.drinks.length)];
-		//console.log(result2.drinks.length);
-		//console.log(randomselect); 
 
-		
+		// Get full details for the selected drink
+		const response3 = await axios.get(API_URL + "/lookup.php?i=" + randomselect.idDrink);
+		const fullDrink = response3.data.drinks[0];
+
+		// Process ingredients
+		let ingredients = [];
+		for (let i = 1; i <= 15; i++) {
+			if (fullDrink[`strIngredient${i}`]) {
+				ingredients.push({
+					name: fullDrink[`strIngredient${i}`],
+					measure: fullDrink[`strMeasure${i}`]
+				});
+			}
+		}
+
 		res.render("index.ejs", { 
 			options: ingredientNames,
-			result: randomselect
+			result: fullDrink,
+			ingredients: ingredients
 		});
 	} catch(error) {
 		console.error("Failed to make request: ", error.message);
