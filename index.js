@@ -6,6 +6,16 @@ const app = express();
 const port = 3000;
 const API_URL = "https://www.thecocktaildb.com/api/json/v1/1";
 
+let cachedIngredientNames = null;
+
+async function getIngredientNames() {
+  if (!cachedIngredientNames) {
+    const response = await axios.get(API_URL + "/list.php?i=list");
+    const result = response.data;
+    cachedIngredientNames = result.drinks.map((drink) => drink.strIngredient1);
+  }
+  return cachedIngredientNames;
+}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -15,9 +25,7 @@ app.use(express.static("public"));
 
 app.get("/", async (req,res)=>{
     try {
-      const response = await axios.get(API_URL + "/list.php?i=list");
-      const result = response.data;
-      var ingredientNames = result.drinks.map((drink) => drink.strIngredient1);
+      const ingredientNames = await getIngredientNames();
       console.log(ingredientNames);
       res.render("index.ejs", {options:ingredientNames});
     } catch (error) {
@@ -30,9 +38,7 @@ app.get("/", async (req,res)=>{
 
 app.post("/", async(req,res)=>{
 	try {
-		const response = await axios.get(API_URL + "/list.php?i=list");
-    const result = response.data;
-    var ingredientNames = result.drinks.map((drink) => drink.strIngredient1);
+    const ingredientNames = await getIngredientNames();
 
 		// console.log(req.body.type);
 		const response2 = await axios.get(API_URL+"/filter.php?i="+req.body.type);
