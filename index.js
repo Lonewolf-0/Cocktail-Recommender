@@ -57,7 +57,8 @@ app.post("/", async(req,res)=>{
 		res.render("index.ejs", { 
 			options: ingredientNames,
 			result: fullDrink,
-			ingredients: ingredients
+			ingredients: ingredients,
+			selectedIngredient: req.body.type
 		});
 	} catch(error) {
 		console.error("Failed to make request: ", error.message);
