@@ -28,27 +28,41 @@ app.get("/", async (req,res)=>{
     }
 });
 
-app.post("/", async (req, res) => {
-  try {
-    const [listResponse, filterResponse] = await Promise.all([
-      axios.get(API_URL + "/list.php?i=list"),
-      axios.get(API_URL + "/filter.php?i=" + req.body.type),
-    ]);
+app.post("/", async(req,res)=>{
+	try {
+		const response = await axios.get(API_URL + "/list.php?i=list");
+    const result = response.data;
+    var ingredientNames = result.drinks.map((drink) => drink.strIngredient1);
 
-    const ingredientNames = listResponse.data.drinks.map(
-      (drink) => drink.strIngredient1
-    );
-    const drinks = filterResponse.data.drinks;
-    const randomSelect = drinks[Math.floor(Math.random() * drinks.length)];
+		// console.log(req.body.type);
+		const response2 = await axios.get(API_URL+"/filter.php?i="+req.body.type);
+		const result2 = response2.data;
+		const randomselect = result2.drinks[Math.floor(Math.random() * result2.drinks.length)];
 
-    res.render("index.ejs", {
-      options: ingredientNames,
-      result: randomSelect,
-    });
-  } catch (error) {
-    console.error("Failed to make request: ", error.message);
-    res.redirect("/");
-  }
+		// Get full details for the selected drink
+		const response3 = await axios.get(API_URL + "/lookup.php?i=" + randomselect.idDrink);
+		const fullDrink = response3.data.drinks[0];
+
+		// Process ingredients
+		let ingredients = [];
+		for (let i = 1; i <= 15; i++) {
+			if (fullDrink[`strIngredient${i}`]) {
+				ingredients.push({
+					name: fullDrink[`strIngredient${i}`],
+					measure: fullDrink[`strMeasure${i}`]
+				});
+			}
+		}
+
+		res.render("index.ejs", { 
+			options: ingredientNames,
+			result: fullDrink,
+			ingredients: ingredients
+		});
+	} catch(error) {
+		console.error("Failed to make request: ", error.message);
+		res.redirect("/");
+	}
 });
 
 

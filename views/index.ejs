@@ -5,67 +5,103 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cocktail Recommender</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .center {
-      margin: auto;
-      width: 50%;
-
-      /* border: 3px solid green; */
-      padding: 2% 0;
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .image{
-      height: 300px;
-      width: 300px;
+    .hero-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 1rem 1rem;
+    }
+    .cocktail-card {
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border: none;
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    .cocktail-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      min-height: 400px;
+    }
+    .ingredient-item {
+        background-color: #e9ecef;
+        border-radius: 20px;
+        padding: 5px 15px;
+        margin: 5px;
+        display: inline-block;
+        font-size: 0.9rem;
     }
   </style>
 </head>
 
 <body>
-  <section>
-    <h1 class="center">
-      Select your choice of ingredient and we'll suggest you a cocktail.
-    </h1>
-  </section>
-  <section>
-    <form action="/" id="form" class="center" method="POST">
-      <div class="row center">
-        <div class="col">
-          <select name="type" class="form-select">
-            <!-- <option value="" data-display="Select">Random </option> -->
-            <% for( let i=0; i < options.length; i++ ) { %>
-              <option value="<%= options[i] %>">
-                <%= options[i] %>
-              </option>
-              <% } %>
-          </select>
-        </div>
-        <div class="col">
-          <button type="submit" class="btn btn-primary">Go</button>
+
+  <div class="hero-section text-center">
+    <div class="container">
+      <h1 class="display-4 fw-bold">Cocktail Recommender</h1>
+      <p class="lead">Select your favorite ingredient and let us surprise you!</p>
+
+      <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <form action="/" method="POST" class="d-flex gap-2">
+                <select name="type" class="form-select form-select-lg">
+                  <% for( let i=0; i < options.length; i++ ) { %>
+                    <option value="<%= options[i] %>"><%= options[i] %></option>
+                  <% } %>
+                </select>
+                <button type="submit" class="btn btn-warning btn-lg px-4 fw-bold">Mix!</button>
+            </form>
         </div>
       </div>
-    </form>
-  </section>
+    </div>
+  </div>
 
-  <section>
+  <div class="container mb-5">
     <% if (locals.result) { %>
-      <div class="center">
-        <div class="row center">
-          <img src="<%= result.strDrinkThumb%>" class="image">
-        </div>
-        <div class="row center">
-          <%= result.strDrink %>
+      <div class="card cocktail-card">
+        <div class="row g-0">
+          <div class="col-md-5">
+            <img src="<%= result.strDrinkThumb %>" class="cocktail-img" alt="<%= result.strDrink %>">
+          </div>
+          <div class="col-md-7">
+            <div class="card-body p-4 p-md-5">
+              <h2 class="card-title display-5 fw-bold mb-3"><%= result.strDrink %></h2>
+
+              <div class="mb-3">
+                <span class="badge bg-secondary"><%= result.strCategory %></span>
+                <span class="badge bg-info text-dark"><%= result.strAlcoholic %></span>
+                <span class="badge bg-light text-dark border"><%= result.strGlass %></span>
+              </div>
+
+              <h4 class="mt-4 mb-3 border-bottom pb-2">Ingredients</h4>
+              <div class="mb-4">
+                <% if (locals.ingredients) { %>
+                    <% ingredients.forEach(function(ing) { %>
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                            <span class="fw-bold"><%= ing.name %></span>
+                            <span class="text-muted"><%= ing.measure %></span>
+                        </div>
+                    <% }); %>
+                <% } %>
+              </div>
+
+              <h4 class="mb-3 border-bottom pb-2">Instructions</h4>
+              <p class="card-text fs-5" style="white-space: pre-line;"><%= result.strInstructions %></p>
+
+            </div>
+          </div>
         </div>
       </div>
-      
     <% } %>
-  </section>
+  </div>
 
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
